@@ -1,3 +1,6 @@
+require_relative './book'
+require 'pry'
+
 ACTIONS = {
   0 => :exit,
   1 => :list_books,
@@ -13,7 +16,9 @@ ACTIONS = {
 
 class App
   def initialize
-    @items = {}
+    @items = {
+      books: [],
+    }
   end
 
   def show_menu
@@ -47,4 +52,20 @@ class App
   def exit
     puts 'Thanks for using this app.'
   end
+
+  def add_book
+    puts 'Input publisher: '
+    publisher = gets.chomp.to_s
+    puts 'Cover state [1 = good, 2 = bad]:  '
+    cover_state = gets.chomp.to_i
+    cover_state = 'bad' if cover_state == 2
+    cover_state = 'good' unless cover_state == 'bad'
+    puts 'Publish date [yyyy-mm-dd]: '
+    date = gets.chomp.to_s
+    args = { publish_date: date }
+    book = Book.new(publisher: publisher, cover: cover_state, **args)
+    @items[:books].push(book)
+  end
+
+  
 end
