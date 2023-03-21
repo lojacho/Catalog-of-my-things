@@ -1,4 +1,5 @@
 require_relative './book'
+require_relative './label'
 require 'pry'
 
 ACTIONS = {
@@ -18,6 +19,7 @@ class App
   def initialize
     @items = {
       books: [],
+      labels: []
     }
   end
 
@@ -62,10 +64,43 @@ class App
     cover_state = 'good' unless cover_state == 'bad'
     puts 'Publish date [yyyy-mm-dd]: '
     date = gets.chomp.to_s
-    args = { publish_date: date }
+    list_labels
+    puts 'Pick label [0 = new label]:  '
+    option = gets.chomp.to_i
+    label = create_label if option.zero?
+    label = @items[:labels][option - 1] unless option.zero?
+    args = { publish_date: date, label: label }
     book = Book.new(publisher: publisher, cover: cover_state, **args)
     @items[:books].push(book)
   end
 
-  
+  def create_label()
+    puts 'Label name: '
+    name = gets.chomp.to_s.capitalize
+    puts 'Label color: '
+    color = gets.chomp.to_s.capitalize
+    Label.new(title: name, color: color)
+  end
+
+  def list_labels
+    if @items[:labels].empty?
+      puts '** No labels found **'
+    else
+      @items[:labels].each_with_index { |label, i| puts "#{i+1}) #{label.title}" }
+    end
+  end
+
+  def list_books
+    if @items[:books].empty?
+      puts '** No books found **'
+    else
+      @items[:books].each do |book|
+        puts "Publisher: #{book.publisher}\nCover state: #{book.cover_state}\nLabel: #{book.label}"
+      end
+    end
+  end
+
+  def save_books
+    File.open('books.json')
+  end
 end
