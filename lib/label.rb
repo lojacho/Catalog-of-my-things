@@ -10,5 +10,6 @@ class Label
 
   def add_item(item)
     @items.push(item)
+    item&.label = self unless item&.label == self
   end
 end

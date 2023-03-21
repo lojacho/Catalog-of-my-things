@@ -11,6 +11,7 @@ class Item
     @label = label
     @publish_date = Date.parse(publish_date) # format: yyyy-mm-dd
     @archived = false
+    label&.add_item(self)
   end
 
   def move_to_archive()
