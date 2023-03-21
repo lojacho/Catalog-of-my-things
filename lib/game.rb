@@ -15,4 +15,3 @@ class Game < Item
     false
   end
 end
-
