@@ -10,6 +10,7 @@ class Genre
   end
 
   def add_item(item)
+    item.genre = self if item.genre.nil?
     @items.push(item)
   end
 end
