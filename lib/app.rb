@@ -1,4 +1,5 @@
 require_relative './music_album'
+require_relative './preserve_music_album'
 require_relative './genre'
 require 'boolean'
 
@@ -68,6 +69,7 @@ class App
     obj_genre = Genre.new(name: genre)
     @items[:music_album].push(MusicAlbum.new(genre: obj_genre, author: author, source: source, label: label, publish_date:publish_date, on_spotify: on_spotify))
     #p @items[:music_album]
+    save_music_album(@items[:music_album])
     puts 'Music Album created successfully'
   end
 
