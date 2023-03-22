@@ -7,7 +7,7 @@ require_relative './book'
 require_relative './label'
 require_relative './preserve_music_album'
 require_relative './book_loader'
-require_relative './label_loader'
+require_relative './label_creator'
 
 ACTIONS = {
   0 => :exit,
@@ -86,15 +86,8 @@ class App
     gets.chomp
   end
 
-  def create_label()
-    puts 'Label name: '
-    name = gets.chomp.to_s.capitalize
-    puts 'Label color: '
-    color = gets.chomp.to_s.capitalize
-    new_label = Label.new(title: name, color: color)
-    @items[:labels].push(new_label)
-    print "\nLabel Created Successfuly\n"
-    new_label
+  def create_label
+    @items[:labels].push(create_new_label)
   end
 
   def list_labels
