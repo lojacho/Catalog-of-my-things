@@ -134,6 +134,22 @@ class App
     load_labels_from_file
   end
 
+  def list_music_albums
+    @items[:music_album] = read_music_album(@items[:music_album])
+    if @items[:music_album][0]
+      @items[:music_album].each do |album|
+        puts "Genre: #{album.genre.name}, " \
+             "Author: #{album.author}, " \
+             "Source: #{album.source}, " \
+             "Label: #{album.label}, " \
+             "Publish Date: #{album.publish_date}, " \
+             "On Spotify: #{album.on_spotify}"
+      end
+    else
+      puts 'There are not any music album to display'
+    end
+  end
+
   def list_genres
     @items[:music_album] = read_music_album(@items[:music_album])
     if @items[:music_album][0]
