@@ -1,3 +1,7 @@
+require_relative './music_album'
+require_relative './genre'
+require 'boolean'
+
 ACTIONS = {
   0 => :exit,
   1 => :list_books,
@@ -13,7 +17,7 @@ ACTIONS = {
 
 class App
   def initialize
-    @items = {}
+    @items = {music_album: []}
   end
 
   def show_menu
@@ -47,4 +51,24 @@ class App
   def exit
     puts 'Thanks for using this app.'
   end
+
+  def add_music_album
+    print 'Add genre: '
+    genre = gets.chomp.to_s
+    print 'Add author: '
+    author = gets.chomp.to_s
+    print 'Add source: '
+    source = gets.chomp.to_s
+    print 'Add label: '
+    label = gets.chomp.to_s
+    print 'Add publish date(yyyy-mm-dd): '
+    publish_date = gets.chomp.to_s
+    print 'Is it on Spotify(true/false): '
+    on_spotify = Boolean(gets.chomp)
+    obj_genre = Genre.new(name: genre)
+    @items[:music_album].push(MusicAlbum.new(genre: obj_genre, author: author, source: source, label: label, publish_date:publish_date, on_spotify: on_spotify))
+    #p @items[:music_album]
+    puts 'Music Album created successfully'
+  end
+
 end

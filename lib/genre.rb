@@ -4,7 +4,7 @@ class Genre
   attr_accessor :name
 
   def initialize(name: nil, items: [])
-    @id = Date.today.to_i
+    @id = Date.today.jd
     @name = name
     @items = items
   end
