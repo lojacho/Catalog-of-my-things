@@ -1,6 +1,5 @@
 require_relative '../lib/label'
 require_relative '../lib/item'
-require 'pry'
 
 describe Label do
   before :each do

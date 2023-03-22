@@ -1,5 +1,4 @@
 require_relative '../lib/book'
-require 'pry'
 
 describe Book do
   before :each do
