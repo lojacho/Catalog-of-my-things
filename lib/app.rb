@@ -1,5 +1,6 @@
 require 'boolean'
 require 'json'
+require 'pry'
 require_relative './music_album'
 require_relative './preserve_music_album'
 require_relative './genre'
@@ -21,10 +22,10 @@ ACTIONS = {
 
 class App
   def initialize
-    @items = { 
+    @items = {
       music_album: [],
-      books: [],
-      labels: []
+      labels: load_labels,
+      books: load_books
     }
   end
 
@@ -59,6 +60,7 @@ class App
   def exit
     puts 'Thanks for using this app.'
     save_books
+    save_labels
   end
 
   def add_book
@@ -71,13 +73,15 @@ class App
     puts 'Publish date [yyyy-mm-dd]: '
     date = gets.chomp.to_s
     list_labels
-    puts 'Pick label [0 = new label]:  '
+    puts 'Pick a label or 0 to create a new one:  '
     option = gets.chomp.to_i
     label = create_label if option.zero?
     label = @items[:labels][option - 1] unless option.zero?
     args = { publish_date: date, label: label }
     book = Book.new(publisher: publisher, cover: cover_state, **args)
     @items[:books].push(book)
+    print "\nBook Created Successfuly\nEnter to continue..."
+    gets.chomp
   end
 
   def create_label()
@@ -87,12 +91,13 @@ class App
     color = gets.chomp.to_s.capitalize
     new_label = Label.new(title: name, color: color)
     @items[:labels].push(new_label)
+    print "\nLabel Created Successfuly\n"
     new_label
   end
 
   def list_labels
     if @items[:labels].empty?
-      puts '** No labels found **'
+      puts "\n** No labels found **\n"
     else
       @items[:labels].each_with_index { |label, i| puts "#{i + 1}) #{label.title}" }
     end
@@ -100,16 +105,51 @@ class App
 
   def list_books
     if @items[:books].empty?
-      puts '** No books found **'
+      puts "\n** No books found **\n"
     else
       @items[:books].each do |book|
         puts "Publisher: #{book.publisher}\nCover state: #{book.cover_state}\nLabel: #{book.label.title}"
       end
     end
+    puts "\nEnter to continue..."
+    gets.chomp
   end
 
   def save_books
     File.write('books.json', JSON.generate(@items[:books]))
+  end
+
+  def save_labels
+    File.write('labels.json', JSON.generate(@items[:labels]))
+  end
+
+  def load_books
+    return [] unless File.file?('books.json')
+
+    JSON.parse(File.read('books.json')).map do |book|
+      labels = load_labels
+      book_label = (
+        labels.select { |label| label&.title == book['label']['title'] }[0] ||
+        Label.new(title: book['label']['title'], color: book['label']['color'], id: book['label']['id'])
+      )
+
+      args = {
+        genre: book['genre'],
+        author: book['author'],
+        source: book['source'],
+        label: book_label,
+        publish_date: book['publish_date']
+      }
+      Book.new(publisher: book['publisher'], cover: book['cover_state'], **args)
+    end
+  end
+
+  def load_labels
+    return [] unless File.file?('labels.json')
+
+    JSON.parse(File.read('labels.json')).map do |label|
+      Label.new(id: label['id'], title: label['title'], color: label['color'])
+    end
   end
 
   def add_music_album

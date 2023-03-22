@@ -10,7 +10,7 @@ class Book < Item
           author: args[:author] || nil,
           source: args[:source] || nil,
           label: args[:label] || nil,
-          publish_date: args[:publish_date] || nil)
+          publish_date: args[:publish_date] || '0000-00-00')
     @publisher = publisher
     @cover_state = cover
   end
