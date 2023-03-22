@@ -3,6 +3,7 @@ require_relative './item'
 
 class Book < Item
   attr_accessor :publisher, :cover_state
+  attr_reader :archived
 
   # Needs a hash as argument for super
   def initialize(publisher:, cover:, **args)
