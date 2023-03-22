@@ -1,7 +1,13 @@
-require_relative './music_album'
-require_relative './preserve_music_album'
-require_relative './genre'
 require 'boolean'
+require 'json'
+require 'pry'
+require_relative './music_album'
+require_relative './genre'
+require_relative './book'
+require_relative './label'
+require_relative './preserve_music_album'
+require_relative './book_loader'
+require_relative './label_creator'
 
 ACTIONS = {
   0 => :exit,
@@ -18,7 +24,11 @@ ACTIONS = {
 
 class App
   def initialize
-    @items = { music_album: [] }
+    @items = {
+      music_album: [],
+      labels: load_labels,
+      books: load_books
+    }
   end
 
   def show_menu
@@ -51,6 +61,77 @@ class App
 
   def exit
     puts 'Thanks for using this app.'
+    save_books
+    save_labels
+  end
+
+  def add_book
+    puts 'Input publisher: '
+    publisher = gets.chomp.to_s
+    puts 'Cover state [1 = good, 2 = bad]:  '
+    cover_state = gets.chomp.to_i
+    cover_state = 'bad' if cover_state == 2
+    cover_state = 'good' unless cover_state == 'bad'
+    puts 'Publish date [yyyy-mm-dd]: '
+    date = gets.chomp.to_s
+    list_labels
+    puts 'Pick a label or 0 to create a new one:  '
+    option = gets.chomp.to_i
+    label = create_label if option.zero?
+    label = @items[:labels][option - 1] unless option.zero?
+    args = { publish_date: date, label: label }
+    book = Book.new(publisher: publisher, cover: cover_state, **args)
+    @items[:books].push(book)
+    print "\nBook Created Successfuly\nEnter to continue..."
+    gets.chomp
+  end
+
+  def create_label
+    @items[:labels].push(create_new_label)
+  end
+
+  def list_labels
+    if @items[:labels].empty?
+      puts "\n** No labels found **\n"
+    else
+      puts "\n=========== Labels ==========="
+      @items[:labels].each_with_index { |label, i| puts " #{i + 1}. \"#{label.title}\" - #{label.color}" }
+      puts "------------------------------\n"
+    end
+  end
+
+  def list_books
+    if @items[:books].empty?
+      puts "\n** No books found **\n"
+    else
+      puts "\n=========== Books ==========="
+      @items[:books].each do |book|
+        puts "Author: #{book.author}\
+ | Publisher: #{book.publisher}\
+ | Genre: #{book.genre}\
+ | Label: #{book.label.title}\
+ | Cover state: #{book.cover_state.capitalize}"
+      end
+      puts "------------------------------\n"
+    end
+    puts "\nEnter to continue..."
+    gets.chomp
+  end
+
+  def save_books
+    File.write('books.json', JSON.generate(@items[:books]))
+  end
+
+  def save_labels
+    File.write('labels.json', JSON.generate(@items[:labels]))
+  end
+
+  def load_books
+    load_books_from_file
+  end
+
+  def load_labels
+    load_labels_from_file
   end
 
   def list_music_albums
