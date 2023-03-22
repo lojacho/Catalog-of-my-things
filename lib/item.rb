@@ -18,7 +18,6 @@ class Item
   end
 
   private
-
   def can_be_archived?()
     ((Date.today - publish_date).to_i / 365) > 10
   end
