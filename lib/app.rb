@@ -2,10 +2,12 @@ require 'boolean'
 require 'json'
 require 'pry'
 require_relative './music_album'
-require_relative './preserve_music_album'
 require_relative './genre'
 require_relative './book'
 require_relative './label'
+require_relative './preserve_music_album'
+require_relative './book_loader'
+require_relative './label_loader'
 
 ACTIONS = {
   0 => :exit,
@@ -99,7 +101,9 @@ class App
     if @items[:labels].empty?
       puts "\n** No labels found **\n"
     else
-      @items[:labels].each_with_index { |label, i| puts "#{i + 1}) #{label.title}" }
+      puts "\n=========== Labels ==========="
+      @items[:labels].each_with_index { |label, i| puts " #{i + 1}. \"#{label.title}\" - #{label.color}" }
+      puts "------------------------------\n"
     end
   end
 
@@ -124,32 +128,11 @@ class App
   end
 
   def load_books
-    return [] unless File.file?('books.json')
-
-    JSON.parse(File.read('books.json')).map do |book|
-      labels = load_labels
-      book_label = (
-        labels.select { |label| label&.title == book['label']['title'] }[0] ||
-        Label.new(title: book['label']['title'], color: book['label']['color'], id: book['label']['id'])
-      )
-
-      args = {
-        genre: book['genre'],
-        author: book['author'],
-        source: book['source'],
-        label: book_label,
-        publish_date: book['publish_date']
-      }
-      Book.new(publisher: book['publisher'], cover: book['cover_state'], **args)
-    end
+    load_books_from_file
   end
 
   def load_labels
-    return [] unless File.file?('labels.json')
-
-    JSON.parse(File.read('labels.json')).map do |label|
-      Label.new(id: label['id'], title: label['title'], color: label['color'])
-    end
+    load_labels_from_file
   end
 
   def add_music_album
