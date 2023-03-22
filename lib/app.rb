@@ -1,6 +1,6 @@
 require_relative './book'
 require_relative './label'
-require 'pry'
+require 'json'
 
 ACTIONS = {
   0 => :exit,
@@ -53,6 +53,7 @@ class App
 
   def exit
     puts 'Thanks for using this app.'
+    save_books
   end
 
   def add_book
@@ -79,14 +80,16 @@ class App
     name = gets.chomp.to_s.capitalize
     puts 'Label color: '
     color = gets.chomp.to_s.capitalize
-    Label.new(title: name, color: color)
+    new_label = Label.new(title: name, color: color)
+    @items[:labels].push(new_label)
+    new_label
   end
 
   def list_labels
     if @items[:labels].empty?
       puts '** No labels found **'
     else
-      @items[:labels].each_with_index { |label, i| puts "#{i+1}) #{label.title}" }
+      @items[:labels].each_with_index { |label, i| puts "#{i + 1}) #{label.title}" }
     end
   end
 
@@ -95,12 +98,12 @@ class App
       puts '** No books found **'
     else
       @items[:books].each do |book|
-        puts "Publisher: #{book.publisher}\nCover state: #{book.cover_state}\nLabel: #{book.label}"
+        puts "Publisher: #{book.publisher}\nCover state: #{book.cover_state}\nLabel: #{book.label.title}"
       end
     end
   end
 
   def save_books
-    File.open('books.json')
+    File.write('books.json', JSON.generate(@items[:books]))
   end
 end
