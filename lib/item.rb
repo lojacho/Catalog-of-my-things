@@ -11,6 +11,7 @@ class Item
     @label = label
     @publish_date = Date.parse(publish_date) # format: yyyy-mm-dd
     @archived = false
+    genre&.add_item(self)
     label&.add_item(self)
   end
 

@@ -1,6 +1,10 @@
+require 'boolean'
+require 'json'
+require_relative './music_album'
+require_relative './preserve_music_album'
+require_relative './genre'
 require_relative './book'
 require_relative './label'
-require 'json'
 
 ACTIONS = {
   0 => :exit,
@@ -17,7 +21,8 @@ ACTIONS = {
 
 class App
   def initialize
-    @items = {
+    @items = { 
+      music_album: [],
       books: [],
       labels: []
     }
@@ -105,5 +110,25 @@ class App
 
   def save_books
     File.write('books.json', JSON.generate(@items[:books]))
+  end
+
+  def add_music_album
+    print 'Add genre: '
+    genre = gets.chomp.to_s
+    print 'Add author: '
+    author = gets.chomp.to_s
+    print 'Add source: '
+    source = gets.chomp.to_s
+    print 'Add label: '
+    label = gets.chomp.to_s
+    print 'Add publish date(yyyy-mm-dd): '
+    publish_date = gets.chomp.to_s
+    print 'Is it on Spotify(true/false): '
+    on_spotify = Boolean(gets.chomp)
+    obj_genre = Genre.new(name: genre)
+    @items[:music_album].push(MusicAlbum.new(genre: obj_genre, author: author, source: source, label: label,
+                                             publish_date: publish_date, on_spotify: on_spotify))
+    save_music_album(@items[:music_album])
+    puts 'Music Album created successfully'
   end
 end
