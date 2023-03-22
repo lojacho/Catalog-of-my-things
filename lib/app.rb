@@ -111,9 +111,15 @@ class App
     if @items[:books].empty?
       puts "\n** No books found **\n"
     else
+      puts "\n=========== Books ==========="
       @items[:books].each do |book|
-        puts "Publisher: #{book.publisher}\nCover state: #{book.cover_state}\nLabel: #{book.label.title}"
+        puts "Author: #{book.author}\
+ | Publisher: #{book.publisher}\
+ | Genre: #{book.genre}\
+ | Label: #{book.label.title}\
+ | Cover state: #{book.cover_state.capitalize}"
       end
+      puts "------------------------------\n"
     end
     puts "\nEnter to continue..."
     gets.chomp
