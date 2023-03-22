@@ -141,6 +141,22 @@ class App
     load_labels_from_file
   end
 
+  def list_genres
+    @items[:music_album] = read_music_album(@items[:music_album])
+    if @items[:music_album][0]
+      displayed_genres = []
+      @items[:music_album].each do |album|
+        genre_name = album.genre.name
+        unless displayed_genres.include?(genre_name)
+          puts "Genre: \"#{genre_name}\""
+          displayed_genres << genre_name
+        end
+      end
+    else
+      puts 'There is not any genre to display'
+    end
+  end
+
   def add_music_album
     print 'Add genre: '
     genre = gets.chomp.to_s
