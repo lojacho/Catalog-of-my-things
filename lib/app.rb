@@ -173,8 +173,11 @@ class App
     author = gets.chomp.to_s
     print 'Add source: '
     source = gets.chomp.to_s
-    print 'Add label: '
-    label = gets.chomp.to_s
+    list_labels
+    puts 'Pick a label or 0 to create a new one:  '
+    option = gets.chomp.to_i
+    label = create_label if option.zero?
+    label = @items[:labels][option - 1] unless option.zero?
     print 'Add publish date(yyyy-mm-dd): '
     publish_date = gets.chomp.to_s
     print 'Is it on Spotify(true/false): '
