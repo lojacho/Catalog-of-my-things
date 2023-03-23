@@ -106,10 +106,10 @@ class App # rubocop:disable Metrics/ClassLength
     last_played_at = gets.chomp.to_s
     puts 'Publish date [yyyy-mm-dd]: '
     date = gets.chomp.to_s
-    aut1=Author.new(first_name:aut)
+    aut1 = Author.new(first_name: aut)
     @items[:author].push(aut1) unless @items[:author].include?(aut1)
     params = { publish_date: date, author: aut1 }
-    game = Game.new(multiplayer: multiplayer, last_played_at:last_played_at, **params )
+    game = Game.new(multiplayer: multiplayer, last_played_at: last_played_at, **params)
     @items[:game].push(game)
     puts 'Game successfully created!'
   end
@@ -149,7 +149,7 @@ class App # rubocop:disable Metrics/ClassLength
 
   def list_authors
     if @items[:author].empty?
-      puts 'Authors list is empty, please create a new one' 
+      puts 'Authors list is empty, please create a new one'
     else
       @items[:author].each_with_index do |author, index|
         puts "#{index + 1} - First name: #{author.first_name} Last name: #{author.last_name}"
@@ -217,7 +217,6 @@ class App # rubocop:disable Metrics/ClassLength
   def load_games
     load_games_from_file
   end
-
 
   def list_music_albums
     @items[:music_album] = read_music_album(@items[:music_album])
