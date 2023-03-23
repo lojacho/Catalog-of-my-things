@@ -1,3 +1,5 @@
+require_relative './genre'
+
 def load_books_from_file
   return [] unless File.file?('books.json')
 
@@ -7,9 +9,10 @@ def load_books_from_file
       labels.select { |label| label&.title == book['label']['title'] }[0] ||
       Label.new(title: book['label']['title'], color: book['label']['color'], id: book['label']['id'])
     )
+    book_genre = Genre.new(name: book['genre']['name'])
 
     args = {
-      genre: book['genre'],
+      genre: book_genre,
       author: book['author'],
       source: book['source'],
       label: book_label,

@@ -24,7 +24,7 @@ ACTIONS = {
   9 => :add_game
 }.freeze
 
-class App
+class App # rubocop:disable Metrics/ClassLength
   def initialize
     @items = {
       music_album: [],
@@ -70,6 +70,8 @@ class App
   end
 
   def add_book
+    puts 'Input genre: '
+    genre = Genre.new(name: gets.chomp.to_s)
     puts 'Input publisher: '
     publisher = gets.chomp.to_s
     puts 'Cover state [1 = good, 2 = bad]:  '
@@ -83,7 +85,7 @@ class App
     option = gets.chomp.to_i
     label = create_label if option.zero?
     label = @items[:labels][option - 1] unless option.zero?
-    args = { publish_date: date, label: label }
+    args = { publish_date: date, label: label, genre: genre }
     book = Book.new(publisher: publisher, cover: cover_state, **args)
     @items[:books].push(book)
     print "\nBook Created Successfuly\nEnter to continue..."
@@ -105,7 +107,9 @@ class App
   end
 
   def create_label
-    @items[:labels].push(create_new_label)
+    new_label = create_new_label
+    @items[:labels].push(new_label)
+    new_label
   end
 
   def list_labels
@@ -168,7 +172,7 @@ class App
       @items[:books].each do |book|
         puts "Author: #{book.author}\
  | Publisher: #{book.publisher}\
- | Genre: #{book.genre}\
+ | Genre: #{book.genre&.name}\
  | Label: #{book.label.title}\
  | Cover state: #{book.cover_state.capitalize}"
       end
@@ -201,7 +205,7 @@ class App
         puts "Genre: #{album.genre.name}, " \
              "Author: #{album.author}, " \
              "Source: #{album.source}, " \
-             "Label: #{album.label}, " \
+             "Label: #{album.label.title}, " \
              "Publish Date: #{album.publish_date}, " \
              "On Spotify: #{album.on_spotify}"
       end
@@ -216,14 +220,22 @@ class App
       displayed_genres = []
       @items[:music_album].each do |album|
         genre_name = album.genre.name
-        unless displayed_genres.include?(genre_name)
-          puts "Genre: \"#{genre_name}\""
-          displayed_genres << genre_name
-        end
+        displayed_genres << genre_name unless displayed_genres.include?(genre_name)
       end
+      displayed_genres = book_genre_reader(displayed_genres)
+      displayed_genres.each { |genre| puts "Genre:\"#{genre}\"" }
     else
       puts 'There is not any genre to display'
     end
+  end
+
+  def book_genre_reader(displayed_genres)
+    return unless @items[:books][0]
+
+    @items[:books].each do |book|
+      displayed_genres << book.genre&.name unless displayed_genres.include?(book.genre&.name)
+    end
+    displayed_genres
   end
 
   def add_music_album
@@ -233,8 +245,11 @@ class App
     author = gets.chomp.to_s
     print 'Add source: '
     source = gets.chomp.to_s
-    print 'Add label: '
-    label = gets.chomp.to_s
+    list_labels
+    puts 'Pick a label or 0 to create a new one:  '
+    option = gets.chomp.to_i
+    label = create_label if option.zero?
+    label = @items[:labels][option - 1] unless option.zero?
     print 'Add publish date(yyyy-mm-dd): '
     publish_date = gets.chomp.to_s
     print 'Is it on Spotify(true/false): '
