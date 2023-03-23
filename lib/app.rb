@@ -22,7 +22,7 @@ ACTIONS = {
   9 => :add_game
 }.freeze
 
-class App
+class App # rubocop:disable Metrics/ClassLength
   def initialize
     @items = {
       music_album: [],
