@@ -143,7 +143,7 @@ class App # rubocop:disable Metrics/ClassLength
         puts "Genre: #{album.genre.name}, " \
              "Author: #{album.author}, " \
              "Source: #{album.source}, " \
-             "Label: #{album.label}, " \
+             "Label: #{album.label.title}, " \
              "Publish Date: #{album.publish_date}, " \
              "On Spotify: #{album.on_spotify}"
       end
