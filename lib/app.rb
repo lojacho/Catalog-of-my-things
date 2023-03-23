@@ -87,7 +87,9 @@ class App
   end
 
   def create_label
-    @items[:labels].push(create_new_label)
+    new_label = create_new_label
+    @items[:labels].push(new_label)
+    new_label
   end
 
   def list_labels
