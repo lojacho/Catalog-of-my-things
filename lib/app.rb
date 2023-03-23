@@ -67,6 +67,7 @@ class App # rubocop:disable Metrics/ClassLength
     puts 'Thanks for using this app.'
     save_books
     save_labels
+    save_games
   end
 
   def add_book
@@ -96,11 +97,15 @@ class App # rubocop:disable Metrics/ClassLength
     puts '\n*- Add a game -*\n'
     print 'Is it a multiplayer game? [Y/N]: '
     multiplayer = gets.chomp.to_s.downcase == 'y'
+    puts 'Add author name '
+    aut = gets.chomp.to_s
     print 'When was it last played at? [yyyy-mm-dd] '
     last_played_at = gets.chomp.to_s
     puts 'Publish date [yyyy-mm-dd]: '
     date = gets.chomp.to_s
-    params = { publish_date: date }
+    aut1=Author.new(first_name:aut)
+    @items[:author].push(aut1) unless @items[:author].include?(aut1)
+    params = { publish_date: date, author: aut1 }
     game = Game.new(multiplayer: multiplayer, last_played_at:last_played_at, **params )
     @items[:game].push(game)
     puts 'Game successfully created!'
@@ -161,7 +166,7 @@ class App # rubocop:disable Metrics/ClassLength
   end
 
   def save_games
-    File.open('games.json')
+    File.write('./data/games.json', JSON.generate(@items[:game]))
   end
 
   def list_books
