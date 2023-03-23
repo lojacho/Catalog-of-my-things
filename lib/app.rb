@@ -9,6 +9,7 @@ require_relative './preserve_music_album'
 require_relative './book_loader'
 require_relative './label_creator'
 require_relative './game'
+require_relative './author'
 
 ACTIONS = {
   0 => :exit,
@@ -29,7 +30,8 @@ class App
       music_album: [],
       labels: load_labels,
       books: load_books,
-      game: []
+      game: [],
+      author: []
     }
   end
 
@@ -114,6 +116,48 @@ class App
       @items[:labels].each_with_index { |label, i| puts " #{i + 1}. \"#{label.title}\" - #{label.color}" }
       puts "------------------------------\n"
     end
+  end
+
+  def add_author_ui
+    puts '- Authors -'
+    list_all_authors
+    print "\nSelect an author [number on the list] or create a new author [0]: "
+    author = gets.chomp
+    select_create_author(author)
+  end
+
+  def create_author
+    puts "\n*- New Author -*"
+    print 'First name: '
+    first_name = gets.chomp
+    print 'Last name: '
+    last_name = gets.chomp
+    Author.new(first_name, last_name)
+  end
+
+  def list_authors
+    if @items[:author].empty?
+      puts 'Authors list is empty, please create a new one' 
+    else
+      @items[:author].each_with_index do |author, index|
+        puts "#{index + 1} - First name: #{author.first_name} Last name: #{author.last_name}"
+      end
+    end
+  end
+
+  def list_games
+    if @items[:game].empty?
+      puts 'Game list is empty'
+    else
+      @items[:game].each_with_index do |game, index|
+        puts "[#{index}] - Publish date: #{game.publish_date} Last played: #{game.last_played_at}
+      Multiplayer: #{game.multiplayer}\n"
+      end
+    end
+  end
+
+  def save_games
+    File.open('games.json')
   end
 
   def list_books
