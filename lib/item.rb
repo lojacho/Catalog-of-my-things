@@ -13,6 +13,7 @@ class Item
     @archived = false
     genre&.add_item(self)
     label&.add_item(self)
+    author&.add_item(self)
   end
 
   def move_to_archive()
