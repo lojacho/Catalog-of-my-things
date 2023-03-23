@@ -10,7 +10,7 @@ class Author
   end
 
   def add_item(item)
-    @items << item
-    item.author = self
+    @items.push(item)
+    item&.author = self unless item&.author == self
   end
 end
