@@ -10,6 +10,8 @@ require_relative './book_loader'
 require_relative './label_creator'
 require_relative './game'
 require_relative './author'
+require_relative './game_loader'
+require_relative './author_creator'
 
 ACTIONS = {
   0 => :exit,
@@ -30,8 +32,8 @@ class App # rubocop:disable Metrics/ClassLength
       music_album: [],
       labels: load_labels,
       books: load_books,
-      game: [],
-      author: []
+      game: load_games,
+      author: load_authors
     }
   end
 
@@ -68,6 +70,7 @@ class App # rubocop:disable Metrics/ClassLength
     save_books
     save_labels
     save_games
+    save_authors
   end
 
   def add_book
@@ -169,6 +172,10 @@ class App # rubocop:disable Metrics/ClassLength
     File.write('./data/games.json', JSON.generate(@items[:game]))
   end
 
+  def save_authors
+    File.write('./data/authors.json', JSON.generate(@items[:author]))
+  end
+
   def list_books
     if @items[:books].empty?
       puts "\n** No books found **\n"
@@ -202,6 +209,15 @@ class App # rubocop:disable Metrics/ClassLength
   def load_labels
     load_labels_from_file
   end
+
+  def load_authors
+    load_authors_from_file
+  end
+
+  def load_games
+    load_games_from_file
+  end
+
 
   def list_music_albums
     @items[:music_album] = read_music_album(@items[:music_album])
