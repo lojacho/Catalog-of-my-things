@@ -8,6 +8,10 @@ require_relative './label'
 require_relative './preserve_music_album'
 require_relative './book_loader'
 require_relative './label_creator'
+require_relative './game'
+require_relative './author'
+require_relative './game_loader'
+require_relative './author_creator'
 
 ACTIONS = {
   0 => :exit,
@@ -27,7 +31,9 @@ class App # rubocop:disable Metrics/ClassLength
     @items = {
       music_album: [],
       labels: load_labels,
-      books: load_books
+      books: load_books,
+      game: load_games,
+      author: load_authors
     }
   end
 
@@ -63,6 +69,8 @@ class App # rubocop:disable Metrics/ClassLength
     puts 'Thanks for using this app.'
     save_books
     save_labels
+    save_games
+    save_authors
   end
 
   def add_book
@@ -88,6 +96,24 @@ class App # rubocop:disable Metrics/ClassLength
     gets.chomp
   end
 
+  def add_game
+    puts '\n*- Add a game -*\n'
+    print 'Is it a multiplayer game? [Y/N]: '
+    multiplayer = gets.chomp.to_s.downcase == 'y'
+    puts 'Add author name '
+    aut = gets.chomp.to_s
+    print 'When was it last played at? [yyyy-mm-dd] '
+    last_played_at = gets.chomp.to_s
+    puts 'Publish date [yyyy-mm-dd]: '
+    date = gets.chomp.to_s
+    aut1 = Author.new(first_name: aut)
+    @items[:author].push(aut1) unless @items[:author].include?(aut1)
+    params = { publish_date: date, author: aut1 }
+    game = Game.new(multiplayer: multiplayer, last_played_at: last_played_at, **params)
+    @items[:game].push(game)
+    puts 'Game successfully created!'
+  end
+
   def create_label
     new_label = create_new_label
     @items[:labels].push(new_label)
@@ -102,6 +128,52 @@ class App # rubocop:disable Metrics/ClassLength
       @items[:labels].each_with_index { |label, i| puts " #{i + 1}. \"#{label.title}\" - #{label.color}" }
       puts "------------------------------\n"
     end
+  end
+
+  def add_author_ui
+    puts '- Authors -'
+    list_all_authors
+    print "\nSelect an author [number on the list] or create a new author [0]: "
+    author = gets.chomp
+    select_create_author(author)
+  end
+
+  def create_author
+    puts "\n*- New Author -*"
+    print 'First name: '
+    first_name = gets.chomp
+    print 'Last name: '
+    last_name = gets.chomp
+    Author.new(first_name, last_name)
+  end
+
+  def list_authors
+    if @items[:author].empty?
+      puts 'Authors list is empty, please create a new one'
+    else
+      @items[:author].each_with_index do |author, index|
+        puts "#{index + 1} - First name: #{author.first_name} Last name: #{author.last_name}"
+      end
+    end
+  end
+
+  def list_games
+    if @items[:game].empty?
+      puts 'Game list is empty'
+    else
+      @items[:game].each_with_index do |game, index|
+        puts "[#{index}] - Publish date: #{game.publish_date} Last played: #{game.last_played_at}
+      Multiplayer: #{game.multiplayer}\n"
+      end
+    end
+  end
+
+  def save_games
+    File.write('./data/games.json', JSON.generate(@items[:game]))
+  end
+
+  def save_authors
+    File.write('./data/authors.json', JSON.generate(@items[:author]))
   end
 
   def list_books
@@ -136,6 +208,14 @@ class App # rubocop:disable Metrics/ClassLength
 
   def load_labels
     load_labels_from_file
+  end
+
+  def load_authors
+    load_authors_from_file
+  end
+
+  def load_games
+    load_games_from_file
   end
 
   def list_music_albums

@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
+    boolean (1.0.1)
     json (2.6.3)
     parallel (1.22.1)
     parser (3.2.1.0)
@@ -25,9 +26,11 @@ GEM
     unicode-display_width (2.4.2)
 
 PLATFORMS
+  arm64-darwin-21
   x86_64-linux
 
 DEPENDENCIES
+  boolean
   rubocop (>= 1.0, < 2.0)
 
 BUNDLED WITH
