@@ -152,7 +152,7 @@ class App # rubocop:disable Metrics/ClassLength
       puts 'Authors list is empty, please create a new one'
     else
       @items[:author].each_with_index do |author, index|
-        puts "#{index + 1} - First name: #{author.first_name} Last name: #{author.last_name}"
+        puts "#{index + 1} - First name: #{author.first_name}"
       end
     end
   end
@@ -195,11 +195,11 @@ class App # rubocop:disable Metrics/ClassLength
   end
 
   def save_books
-    File.write('books.json', JSON.generate(@items[:books]))
+    File.write('./data/books.json', JSON.generate(@items[:books]))
   end
 
   def save_labels
-    File.write('labels.json', JSON.generate(@items[:labels]))
+    File.write('./data/labels.json', JSON.generate(@items[:labels]))
   end
 
   def load_books
@@ -223,7 +223,7 @@ class App # rubocop:disable Metrics/ClassLength
     if @items[:music_album][0]
       @items[:music_album].each do |album|
         puts "Genre: #{album.genre.name}, " \
-             "Author: #{album.author}, " \
+             "Author: #{album.author.first_name}, " \
              "Source: #{album.source}, " \
              "Label: #{album.label.title}, " \
              "Publish Date: #{album.publish_date}, " \
@@ -250,7 +250,7 @@ class App # rubocop:disable Metrics/ClassLength
   end
 
   def book_genre_reader(displayed_genres)
-    return unless @items[:books][0]
+    return displayed_genres unless @items[:books][0]
 
     @items[:books].each do |book|
       displayed_genres << book.genre&.name unless displayed_genres.include?(book.genre&.name)
@@ -260,9 +260,10 @@ class App # rubocop:disable Metrics/ClassLength
 
   def add_music_album
     print 'Add genre: '
-    genre = gets.chomp.to_s
+    obj_genre = Genre.new(name: gets.chomp.to_s)
     print 'Add author: '
-    author = gets.chomp.to_s
+    author = Author.new(first_name: gets.chomp.to_s)
+    @items[:author].push(author) unless @items[:author].include?(author)
     print 'Add source: '
     source = gets.chomp.to_s
     list_labels
@@ -274,7 +275,6 @@ class App # rubocop:disable Metrics/ClassLength
     publish_date = gets.chomp.to_s
     print 'Is it on Spotify(true/false): '
     on_spotify = Boolean(gets.chomp)
-    obj_genre = Genre.new(name: genre)
     @items[:music_album].push(MusicAlbum.new(genre: obj_genre, author: author, source: source, label: label,
                                              publish_date: publish_date, on_spotify: on_spotify))
     save_music_album(@items[:music_album])

@@ -1,9 +1,9 @@
 require_relative './genre'
 
 def load_books_from_file
-  return [] unless File.file?('books.json')
+  return [] unless File.file?('./data/books.json')
 
-  JSON.parse(File.read('books.json')).map do |book|
+  JSON.parse(File.read('./data/books.json')).map do |book|
     labels = load_labels
     book_label = (
       labels.select { |label| label&.title == book['label']['title'] }[0] ||

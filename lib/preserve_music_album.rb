@@ -14,12 +14,12 @@ def save_music_album(music_album)
     ]
   end
   albums_json = JSON.generate(albums)
-  File.write('albums.json', albums_json)
+  File.write('./data/albums.json', albums_json)
 end
 
 def read_music_album(music_album)
-  File.write('albums.json', '') unless File.exist?('./albums.json')
-  albums_data = File.read('./albums.json')
+  File.write('./data/albums.json', '') unless File.exist?('./data/albums.json')
+  albums_data = File.read('./data/albums.json')
   if albums_data.strip.empty?
     music_album = []
   elsif music_album.empty?
@@ -27,7 +27,8 @@ def read_music_album(music_album)
     albums_data.each do |album|
       obj_genre = Genre.new(name: album[0])
       obj_label = Label.new(title: album[3]['title'], color: album[3]['color'])
-      music_album.push(MusicAlbum.new(genre: obj_genre, author: album[1], source: album[2], label: obj_label,
+      obj_author = Author.new(first_name: album[1]['first_name'])
+      music_album.push(MusicAlbum.new(genre: obj_genre, author: obj_author, source: album[2], label: obj_label,
                                       publish_date: album[4], on_spotify: album[5]))
     end
   end

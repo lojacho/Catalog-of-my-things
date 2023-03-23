@@ -1,7 +1,7 @@
 def load_labels_from_file
-  return [] unless File.file?('labels.json')
+  return [] unless File.file?('./data/labels.json')
 
-  JSON.parse(File.read('labels.json')).map do |label|
+  JSON.parse(File.read('./data/labels.json')).map do |label|
     Label.new(id: label['id'], title: label['title'], color: label['color'])
   end
 end
