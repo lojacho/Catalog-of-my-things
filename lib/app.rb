@@ -66,6 +66,8 @@ class App # rubocop:disable Metrics/ClassLength
   end
 
   def add_book
+    puts 'Input genre: '
+    genre = Genre.new(name: gets.chomp.to_s)
     puts 'Input publisher: '
     publisher = gets.chomp.to_s
     puts 'Cover state [1 = good, 2 = bad]:  '
@@ -79,7 +81,7 @@ class App # rubocop:disable Metrics/ClassLength
     option = gets.chomp.to_i
     label = create_label if option.zero?
     label = @items[:labels][option - 1] unless option.zero?
-    args = { publish_date: date, label: label }
+    args = { publish_date: date, label: label, genre: genre }
     book = Book.new(publisher: publisher, cover: cover_state, **args)
     @items[:books].push(book)
     print "\nBook Created Successfuly\nEnter to continue..."
@@ -110,7 +112,7 @@ class App # rubocop:disable Metrics/ClassLength
       @items[:books].each do |book|
         puts "Author: #{book.author}\
  | Publisher: #{book.publisher}\
- | Genre: #{book.genre}\
+ | Genre: #{book.genre&.name}\
  | Label: #{book.label.title}\
  | Cover state: #{book.cover_state.capitalize}"
       end
@@ -158,14 +160,22 @@ class App # rubocop:disable Metrics/ClassLength
       displayed_genres = []
       @items[:music_album].each do |album|
         genre_name = album.genre.name
-        unless displayed_genres.include?(genre_name)
-          puts "Genre: \"#{genre_name}\""
-          displayed_genres << genre_name
-        end
+        displayed_genres << genre_name unless displayed_genres.include?(genre_name)
       end
+      displayed_genres = book_genre_reader(displayed_genres)
+      displayed_genres.each { |genre| puts "Genre:\"#{genre}\"" }
     else
       puts 'There is not any genre to display'
     end
+  end
+
+  def book_genre_reader(displayed_genres)
+    return unless @items[:books][0]
+
+    @items[:books].each do |book|
+      displayed_genres << book.genre&.name unless displayed_genres.include?(book.genre&.name)
+    end
+    displayed_genres
   end
 
   def add_music_album
