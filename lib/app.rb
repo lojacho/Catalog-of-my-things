@@ -8,6 +8,7 @@ require_relative './label'
 require_relative './preserve_music_album'
 require_relative './book_loader'
 require_relative './label_creator'
+require_relative './game'
 
 ACTIONS = {
   0 => :exit,
@@ -27,7 +28,8 @@ class App
     @items = {
       music_album: [],
       labels: load_labels,
-      books: load_books
+      books: load_books,
+      game: []
     }
   end
 
@@ -84,6 +86,20 @@ class App
     @items[:books].push(book)
     print "\nBook Created Successfuly\nEnter to continue..."
     gets.chomp
+  end
+
+  def add_game
+    puts '\n*- Add a game -*\n'
+    print 'Is it a multiplayer game? [Y/N]: '
+    multiplayer = gets.chomp.to_s.downcase == 'y'
+    print 'When was it last played at? [yyyy-mm-dd] '
+    last_played_at = gets.chomp.to_s
+    puts 'Publish date [yyyy-mm-dd]: '
+    date = gets.chomp.to_s
+    params = { publish_date: date }
+    game = Game.new(multiplayer: multiplayer, last_played_at:last_played_at, **params )
+    @items[:game].push(game)
+    puts 'Game successfully created!'
   end
 
   def create_label
