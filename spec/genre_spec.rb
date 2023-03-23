@@ -5,7 +5,7 @@ describe Genre do
     @genre = Genre.new(name: 'San Juanitos')
   end
   context 'When testing Genre class: ' do
-    it 'Genre.new creates a label object' do
+    it 'Genre.new creates a genre object' do
       expect(@genre).to be_instance_of(Genre)
     end
 
