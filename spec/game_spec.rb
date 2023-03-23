@@ -17,7 +17,7 @@ describe 'Test Game class' do
     expect(game.archived).to be true
   end
 
-  it "game publisher should be 'test1'" do
+  it 'game multiplayer should be false' do
     expect(game.multiplayer).to be false
   end
 end
