@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ClassLength
 require 'boolean'
 require 'json'
 require 'pry'
