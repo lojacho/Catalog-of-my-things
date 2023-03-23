@@ -38,3 +38,14 @@ ALTER TABLE Labels
   ADD COLUMN books INT REFERENCES Books(id),
   ADD COLUMN games INT REFERENCES Games(id),
   ADD COLUMN music_albums INT REFERENCES Music_albums(id);
+
+ALTER TABLE author 
+  ADD COLUMN first_name VARCHAR(250),
+  ADD COLUMN Last_name VARCHAR(250)
+  ADD COLUMN books INT REFERENCES Books(id),
+  ADD COLUMN games INT REFERENCES Games(id),
+  ADD COLUMN music_albums INT REFERENCES Music_albums(id);
+
+ALTER TABLE game 
+  ADD COLUMN multiplayer BOOLEAN,
+  ADD COLUMN last_played DATE;
