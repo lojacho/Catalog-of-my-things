@@ -2,6 +2,7 @@ require 'date'
 
 class Genre
   attr_accessor :name
+  attr_reader :items
 
   def initialize(name: nil, items: [])
     @id = Date.today.jd
