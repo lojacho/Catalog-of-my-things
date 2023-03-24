@@ -1,0 +1,70 @@
+CREATE TABLE Genres (
+	id INT GENERATED ALWAYS AS IDENTITY,
+	PRIMARY KEY (id)
+);
+CREATE TABLE Authors (
+	id INT GENERATED ALWAYS AS IDENTITY,
+	PRIMARY KEY (id)
+);
+CREATE TABLE Labels (
+	id INT GENERATED ALWAYS AS IDENTITY,
+	PRIMARY KEY (id)
+);
+CREATE TABLE Books (
+	id INT GENERATED ALWAYS AS IDENTITY,
+	PRIMARY KEY (id)
+);
+CREATE TABLE Music_albums (
+	id INT GENERATED ALWAYS AS IDENTITY,
+	PRIMARY KEY (id)
+);
+CREATE TABLE Games (
+	id INT GENERATED ALWAYS AS IDENTITY,
+	PRIMARY KEY (id)
+);
+
+ALTER TABLE Books 
+  ADD COLUMN id_genre INT REFERENCES genres(id),
+  ADD COLUMN id_author INT REFERENCES authors(id),
+  ADD COLUMN id_label INT REFERENCES labels(id),
+  ADD COLUMN publish_date DATE,
+  ADD COLUMN archived BOOLEAN,
+  ADD COLUMN publisher VARCHAR(250),
+  ADD COLUMN cover_state VARCHAR(250);
+  
+ALTER TABLE Labels 
+  ADD COLUMN title VARCHAR(250),
+  ADD COLUMN color VARCHAR(250),
+  ADD COLUMN books INT REFERENCES Books(id),
+  ADD COLUMN games INT REFERENCES Games(id),
+  ADD COLUMN music_albums INT REFERENCES Music_albums(id);
+
+ALTER TABLE Authors
+  ADD COLUMN first_name VARCHAR(250),
+  ADD COLUMN Last_name VARCHAR(250),
+  ADD COLUMN books INT REFERENCES Books(id),
+  ADD COLUMN games INT REFERENCES Games(id),
+  ADD COLUMN music_albums INT REFERENCES Music_albums(id);
+
+ALTER TABLE Games
+  ADD COLUMN multiplayer BOOLEAN,
+  ADD COLUMN last_played DATE,
+  ADD COLUMN id_genre INT REFERENCES genres(id),
+  ADD COLUMN id_author INT REFERENCES authors(id),
+  ADD COLUMN id_label INT REFERENCES labels(id),
+  ADD COLUMN publish_date DATE,
+  ADD COLUMN archived BOOLEAN;
+
+ALTER TABLE Genres
+  ADD COLUMN name VARCHAR(250),
+  ADD COLUMN books INT REFERENCES Books(id),
+  ADD COLUMN games INT REFERENCES Games(id),
+  ADD COLUMN music_albums INT REFERENCES Music_albums(id);
+
+ALTER TABLE Music_albums
+  ADD COLUMN on_spotify BOOLEAN,
+  ADD COLUMN id_genre INT REFERENCES genres(id),
+  ADD COLUMN id_author INT REFERENCES authors(id),
+  ADD COLUMN id_label INT REFERENCES labels(id),
+  ADD COLUMN publish_date DATE,
+  ADD COLUMN archived BOOLEAN;
